@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header">
+            <h1 class="title">Simple TODO-list</h1>
+            <a href="https://github.com/jonjyr" class="github">My GitHub</a>
+        </div>
+    </header>
+    <main>
+        <div class="main">
+            <div class="list">
+                <table id="table"></table>
+            </div>
+            <div class="create">
+                <button id="showBtn" type="button">Create list</button>
+                <button>Upload file</button><br>
+                <form action="#" name="createForm" id="createForm" class="listinput">
+                    <label for="listname">List name:</label><br>
+                    <input type="text" id="listname" name="listname"><br><br>
+                    <legend>List items:</legend>
+                    <textarea name="listitems" id="listitems" cols="22" rows="10" placeholder="One item per line"></textarea><br><br>
+                    <button id="createBtn" type="button">Generate list</button>
+                    <button id="cancelBtn" type="button">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    <script src="javascript.js"></script>
+</body>
+</html>

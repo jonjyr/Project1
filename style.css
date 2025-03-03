@@ -1,0 +1,39 @@
+/* Header Style */
+
+.header {
+    display: flex;
+}
+
+.title {
+    margin-left: auto;
+}
+
+.github {
+    margin-left: auto;
+}
+
+/* Main Style */
+
+.main {
+    display: flex;
+    justify-content: center;
+}
+
+.list {
+    padding: 1em;
+    border: 1px solid black;
+    display: none;
+}
+
+td {
+    padding-bottom: 0.2em;
+}
+
+.create {
+    padding: 1em;
+}
+
+.listinput {
+    padding-top: 1em;
+    display: none;
+}
