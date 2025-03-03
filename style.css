@@ -27,6 +27,12 @@
 
 td {
     padding-bottom: 0.2em;
+    padding-right: 0.5em;
+}
+
+th {
+    text-decoration: underline;
+    padding-bottom: 1em;
 }
 
 .create {
@@ -36,4 +42,20 @@ td {
 .listinput {
     padding-top: 1em;
     display: none;
+}
+
+.error {
+    color: red;
+}
+
+.delete {
+    color: red;
+    visibility: hidden;
+    cursor: pointer;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.checkbox {
+    cursor: pointer;
 }
