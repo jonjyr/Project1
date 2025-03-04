@@ -20,7 +20,7 @@
 }
 
 .list {
-    padding: 1em;
+    padding: 0.5em;
     border: 1px solid black;
     display: none;
 }
@@ -58,4 +58,18 @@ th {
 
 .checkbox {
     cursor: pointer;
+}
+
+#filter {
+    text-align: center;
+}
+
+.borderrow {
+    border-bottom: 1px solid black;
+    height: 0px;
+    padding-top: 0.5em;
+}
+
+.bottomrow td {
+    padding-top: 0.5em;
 }

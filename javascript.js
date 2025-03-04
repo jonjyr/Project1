@@ -19,6 +19,7 @@ document.getElementById("cancelBtn").addEventListener("click", cancelCreate);
 function createList(listname, listitems) {
     let table = document.getElementById("table");
     document.getElementsByClassName("list")[0].style.display = "block";
+    localStorage.setItem("name", listname);
 
     //clear table and create list header element
 
@@ -30,61 +31,106 @@ function createList(listname, listitems) {
     name.innerHTML = listname;
 
     //list items
-
     for (let i = 0; i < listitems.length; i++) {
         if (listitems[i].trim() != "") {
+
+            //check for checkbox state
+
+            let checkbox = false;
+
+            if (listitems[i].endsWith("_checked")) {
+                listitems[i] = listitems[i].replace("_checked", "");
+                checkbox = true;
+            }
+
+            //create row
+
             let row = document.createElement("tr");
-            row.id = "row" + i;
+            let uniqueid = Date.now() + i;
+            row.id = "row" + uniqueid;
             row.innerHTML = 
-                '<td><input class="checkbox" type="checkbox" id="checkbox' + i + '"></td><td id="item' + i + '">' + listitems[i] + '</td><td><b class="delete" id="delete' + i + '">&#10006;</b></td>';
+                '<td><input class="checkbox" type="checkbox" id="checkbox' + uniqueid + '"></td><td id="item' + uniqueid + '">' + listitems[i] + '</td><td><b class="delete" id="delete' + uniqueid + '">&#10006;</b></td>';
             table.appendChild(row);
+            localStorage.setItem("item_" + uniqueid, listitems[i]);
+            if (checkbox == true) {
+                localStorage.setItem("checkbox_" + uniqueid, "true");
+                document.getElementById("checkbox" + uniqueid).checked = true;
+                document.getElementById("item" + uniqueid).style.textDecoration = "line-through";
+            }
+            
+            //determine item order
+
+            let order = JSON.parse(localStorage.getItem("item_order")) || [];
+            order.push(uniqueid);
+            localStorage.setItem("item_order", JSON.stringify(order));
 
             //function to use checkbox
             
-            document.getElementById("checkbox" + i).addEventListener("click", function () {
-                if (document.getElementById("checkbox" + i).checked) {
-                    document.getElementById("item" + i).style.textDecoration = "line-through";
-                    localStorage.setItem("checkbox" + i, "true");
+            document.getElementById("checkbox" + uniqueid).addEventListener("click", function () {
+                if (document.getElementById("checkbox" + uniqueid).checked) {
+                    document.getElementById("item" + uniqueid).style.textDecoration = "line-through";
+                    localStorage.setItem("checkbox_" + uniqueid, "true");
                 } else {
-                    document.getElementById("item" + i).style.textDecoration = "none";
-                    localStorage.setItem("checkbox" + i, "false");
+                    document.getElementById("item" + uniqueid).style.textDecoration = "none";
+                    localStorage.removeItem("checkbox_" + uniqueid);
                 }
             });
 
             //function to show, hide and operate delete button
 
-            document.getElementById("delete" + i).addEventListener("mouseover", function () {
-                document.getElementById("item" + i).style.color = "red";
+            document.getElementById("delete" + uniqueid).addEventListener("mouseover", function () {
+                document.getElementById("item" + uniqueid).style.color = "red";
             });
 
-            document.getElementById("delete" + i).addEventListener("mouseout", function () {
-                document.getElementById("item" + i).style.color = "black";
+            document.getElementById("delete" + uniqueid).addEventListener("mouseout", function () {
+                document.getElementById("item" + uniqueid).style.color = "black";
             });
 
-            document.getElementById("row" + i).addEventListener("mouseover", function () {
-                document.getElementById("delete" + i).style.visibility = "visible";
+            document.getElementById("row" + uniqueid).addEventListener("mouseover", function () {
+                document.getElementById("delete" + uniqueid).style.visibility = "visible";
             });
 
-            document.getElementById("row" + i).addEventListener("mouseout", function () {
-                document.getElementById("delete" + i).style.visibility = "hidden";
+            document.getElementById("row" + uniqueid).addEventListener("mouseout", function () {
+                document.getElementById("delete" + uniqueid).style.visibility = "hidden";
             });
 
-            document.getElementById("delete" + i).addEventListener("click", function () {
-                document.getElementById("item" + i).parentNode.remove();
-                
-        });
+            document.getElementById("delete" + uniqueid).addEventListener("click", function () {
+                document.getElementById("row" + uniqueid).remove();
+                localStorage.removeItem("item_" + uniqueid);
+                if (localStorage.getItem("checkbox_" + uniqueid) === "true") {
+                    localStorage.removeItem("checkbox_" + uniqueid);
+                }
+            });
         }
     }
+
+    //create bottom row
+
+    let borderrow = document.createElement("tr");
+    borderrow.innerHTML = '<td colspan="3" class="borderrow"></td>';
+        table.appendChild(borderrow);
+
+    let bottomrow = document.createElement("tr");
+    bottomrow.className = "bottomrow";
+    bottomrow.innerHTML = '<td id="counter">Counter</td><td id="filter">Filter</td><td id="resize">Resize</td>';
+    table.appendChild(bottomrow);
+
+    //create counter
+
+    //TODO
+
+    //create filter buttons
+
+    //TODO
+
+    //create toprow settings
+
+    //TODO
 
     //hide list creation form
 
     cancelCreate();
-
-    //save list to local storage
-
-    localStorage.setItem("name", listname);
-    localStorage.setItem("items", JSON.stringify(listitems));
-
+    
 };
 
 //function to create a list manually
@@ -149,26 +195,31 @@ document.getElementById("createBtn").addEventListener("click", function () {
         }
     }
 
+    localStorage.clear();
     createList(listname, listitems);
 });
 
 //function to check the local storage and load list if it exists
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (localStorage.getItem("name").length != 0) {
+    if (localStorage.getItem("name")) {
         let listname = localStorage.getItem("name");
-        let listitems = JSON.parse(localStorage.getItem("items") || "[]");
+        let listitems = [];
+        let order = JSON.parse(localStorage.getItem("item_order"))
 
-        createList(listname, listitems);
-
-        //checkbox status from local storage
-
-        for (let i = 0; i < listitems.length; i++) {
-            if (localStorage.getItem("checkbox" + i) === "true") {
-                document.getElementById("checkbox" + i).checked = true;
-                document.getElementById("item" + i).style.textDecoration = "line-through";
+        order.forEach(uniqueid => {
+            let key = "item_" + uniqueid;
+            if (localStorage.getItem(key)) {
+                let item = localStorage.getItem(key);
+                let checkbox = "checkbox_" + uniqueid;
+                if (localStorage.getItem(checkbox) === "true") {
+                    item += "_checked";
+                }
+                listitems.push(item);
             }
-        }
+        });
+        
+        localStorage.clear();
+        createList(listname, listitems);
     }
 });
-
