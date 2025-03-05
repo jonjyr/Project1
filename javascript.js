@@ -1,4 +1,4 @@
-//function to show list creation
+//function to show list creation form
 
 function showCreate() {
     document.getElementById("createForm").style.display = "block";
@@ -6,7 +6,7 @@ function showCreate() {
 
 document.getElementById("showBtn").addEventListener("click", showCreate);
 
-//function to cancel list creation
+//function to hide list creation form
 
 function cancelCreate() {
     document.getElementById("createForm").style.display = "none";
@@ -21,14 +21,20 @@ function createList(listname, listitems) {
     document.getElementsByClassName("list")[0].style.display = "block";
     localStorage.setItem("name", listname);
 
-    //clear table and create list header element
+    //clear table and create top rows for list
 
     table.innerHTML = "";
-    table.innerHTML = '<tr><th colspan="3" id="name"></th></tr>';
 
-    let name = document.getElementById("name");
+    table.innerHTML = '<tr id="toprow"><td colspan="3"><div id="toprow-wrapper"><div id="settings"></div><div id="deletelist"></div></div></td></tr>';
 
-    name.innerHTML = listname;
+    let gearrow = document.createElement("tr");
+    gearrow.id = "gearrow";
+    gearrow.innerHTML = '<td colspan="3"><div id="showsettings">⚙️</div></td>';
+    table.appendChild(gearrow);
+    
+    let headerrow = document.createElement("tr");
+    headerrow.innerHTML = '<tr id="header"><th colspan=3 id="name">' + listname + '</th></tr>';
+    table.appendChild(headerrow);
 
     //list items
     for (let i = 0; i < listitems.length; i++) {
@@ -38,27 +44,26 @@ function createList(listname, listitems) {
 
             let checkbox = false;
 
-            if (listitems[i].endsWith("_checked")) {
-                listitems[i] = listitems[i].replace("_checked", "");
+            if (listitems[i].endsWith("(V'#8]i=fWF-^t7cBN-3S)_checked")) {
+                listitems[i] = listitems[i].replace("(V'#8]i=fWF-^t7cBN-3S)_checked", "");
                 checkbox = true;
-            }
+            };
 
-            //create row
+            //create row with item
 
             let row = document.createElement("tr");
             let uniqueid = Date.now() + i;
             row.id = "row" + uniqueid;
-            row.innerHTML = 
-                '<td><input class="checkbox" type="checkbox" id="checkbox' + uniqueid + '"></td><td id="item' + uniqueid + '">' + listitems[i] + '</td><td><b class="delete" id="delete' + uniqueid + '">&#10006;</b></td>';
+            row.innerHTML = '<td><input class="checkbox" type="checkbox" id="checkbox' + uniqueid + '"></td><td class="item" id="item' + uniqueid + '">' + listitems[i] + '</td><td><b class="delete" id="delete' + uniqueid + '">&#10006;</b></td>';
             table.appendChild(row);
             localStorage.setItem("item_" + uniqueid, listitems[i]);
             if (checkbox == true) {
                 localStorage.setItem("checkbox_" + uniqueid, "true");
                 document.getElementById("checkbox" + uniqueid).checked = true;
                 document.getElementById("item" + uniqueid).style.textDecoration = "line-through";
-            }
+            };
             
-            //determine item order
+            //save item order
 
             let order = JSON.parse(localStorage.getItem("item_order")) || [];
             order.push(uniqueid);
@@ -70,9 +75,12 @@ function createList(listname, listitems) {
                 if (document.getElementById("checkbox" + uniqueid).checked) {
                     document.getElementById("item" + uniqueid).style.textDecoration = "line-through";
                     localStorage.setItem("checkbox_" + uniqueid, "true");
+                    completedCounter();
+                    filterItems();
                 } else {
                     document.getElementById("item" + uniqueid).style.textDecoration = "none";
                     localStorage.removeItem("checkbox_" + uniqueid);
+                    completedCounter();
                 }
             });
 
@@ -100,9 +108,10 @@ function createList(listname, listitems) {
                 if (localStorage.getItem("checkbox_" + uniqueid) === "true") {
                     localStorage.removeItem("checkbox_" + uniqueid);
                 }
+                completedCounter()
             });
         }
-    }
+    };
 
     //create bottom row
 
@@ -112,20 +121,133 @@ function createList(listname, listitems) {
 
     let bottomrow = document.createElement("tr");
     bottomrow.className = "bottomrow";
-    bottomrow.innerHTML = '<td id="counter">Counter</td><td id="filter">Filter</td><td id="resize">Resize</td>';
+    bottomrow.innerHTML = '<td colspan="3"><div id="bottomrow-wrapper"><div id="counter"></div><div></div><div id="filter"></div></div></td>';
     table.appendChild(bottomrow);
 
-    //create counter
+    //create counter function
 
-    //TODO
+    function completedCounter() {
+        let counter = document.getElementById("counter");
+        let checkboxes = document.getElementsByClassName("checkbox");
+        let completed = 0;
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                completed++;
+            }
+        }
+        counter.innerHTML = "";
+        if (completed == checkboxes.length) {
+            counter.innerHTML = "Completed: " + completed + "/" + checkboxes.length + "! 🎉";
+        } else {
+            counter.innerHTML = "Completed: " + completed + "/" + checkboxes.length;
+        }
+    };
 
-    //create filter buttons
+    completedCounter();
 
-    //TODO
+    //create filter menu and function
 
-    //create toprow settings
+    let filter = document.getElementById("filter");
+    filter.innerHTML = '<select id="mySelect"><option value="show">Show All</option><option value="hide">Hide Completed</option></select>';
+    
+    function filterItems() {
+        let value = document.getElementById("mySelect").value;
+        let checkboxes = document.getElementsByClassName("checkbox");
+        if (value == "show") {
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    checkboxes[i].parentNode.parentNode.style.display = "";
+                }
+            }
+        } else if (value == "hide") {
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    checkboxes[i].parentNode.parentNode.style.display = "none";
+                }
+            }
+        }
+    };
 
-    //TODO
+    filter.addEventListener("change", filterItems);
+
+    //create color and front size buttons
+
+    let settings = document.getElementById("settings");
+    settings.innerHTML = '<div id="fontsize">&#128474;</div><div id="yellowbox" style="background-color: #fff68b;"></div><div id="greenbox" style="background-color: #cdfc93;"></div><div id="bluebox" style="background-color: #88d6f5;"></div>';
+
+    //create color buttons function
+    function changeColor(color) {
+        if (color == "yellow") {
+            document.getElementById("table").style.backgroundColor = "#fff68b";
+            localStorage.setItem("color", "yellow");
+        } else if (color == "green") {
+            document.getElementById("table").style.backgroundColor = "#cdfc93";
+            localStorage.setItem("color", "green");
+        } else if (color == "blue") {
+            document.getElementById("table").style.backgroundColor = "#88d6f5";
+            localStorage.setItem("color", "blue");
+        }
+    }
+
+    if (localStorage.getItem("color") == "green") {
+        changeColor("green");
+    } else if (localStorage.getItem("color") == "blue") {
+        changeColor("blue");
+    } else if (localStorage.getItem("color") == "yellow") {
+        changeColor("yellow");
+    }
+        
+    document.getElementById("yellowbox").addEventListener("click", function() { 
+        changeColor("yellow"); 
+    });
+
+    document.getElementById("greenbox").addEventListener("click", function() { 
+        changeColor("green"); 
+    });
+
+    document.getElementById("bluebox").addEventListener("click", function() { 
+        changeColor("blue"); 
+    });
+
+    //create front size function
+
+    document.getElementById("fontsize").addEventListener("click", function () {
+        if (document.getElementById("table").style.fontSize === "" || document.getElementById("table").style.fontSize === "100%") {
+            document.getElementById("table").style.fontSize = "105%";
+        } else if (document.getElementById("table").style.fontSize === "105%") {
+            document.getElementById("table").style.fontSize = "95%";
+        } else if (document.getElementById("table").style.fontSize === "95%") {
+            document.getElementById("table").style.fontSize = "100%";
+        }
+    });
+
+    //create delete list button
+
+    let deletelist = document.getElementById("deletelist");
+    deletelist.innerHTML = "Delete List";
+
+    deletelist.addEventListener("click", function () {
+        if (!confirm("Are you sure? This list will be permanently deleted.")) {
+            return;
+        }
+        localStorage.clear();
+        table.innerHTML = "";
+        document.getElementsByClassName("list")[0].style.display = "none";
+    });
+
+    //showing and hiding top row functions
+
+    let gear = document.getElementById("showsettings");
+    gear.addEventListener("click", function () {
+        let toprow = document.getElementById("toprow");
+        let style = window.getComputedStyle(toprow);
+        if (style.display === "none") {
+            toprow.style.display = "table-row";
+        } else {
+            toprow.style.display = "none";
+        }
+    });
+
 
     //hide list creation form
 
@@ -151,19 +273,19 @@ document.getElementById("createBtn").addEventListener("click", function () {
         nameinput.style.border = "1px solid red";
         nameinput.insertAdjacentHTML("afterend", '<b class="error" id="errorname"><br>*Please enter a list name.</b>');
         error = true;
-    } else if (listname.length == 1 || listname.length > 50) {
+    } else if (listname != 1 && listname.length > 21) {
         if (document.getElementById("errorname")) {
             document.getElementById("errorname").remove();
         }
         nameinput.style.border = "1px solid red";
-        nameinput.insertAdjacentHTML("afterend", '<b class="error" id="errorname"><br>*List name must be between 2-50 characters.</b>');
+        nameinput.insertAdjacentHTML("afterend", '<b class="error" id="errorname"><br>*List name must be between 1-21 characters.</b>');
         error = true;
     } else {
         if (document.getElementById("errorname")) {
             document.getElementById("errorname").remove();
         }
         nameinput.style.border = "1px solid black";
-    }
+    };
 
     //validate list items input
 
@@ -205,7 +327,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (localStorage.getItem("name")) {
         let listname = localStorage.getItem("name");
         let listitems = [];
-        let order = JSON.parse(localStorage.getItem("item_order"))
+        let order = JSON.parse(localStorage.getItem("item_order"));
+
+        //marking the checkbox status
 
         order.forEach(uniqueid => {
             let key = "item_" + uniqueid;
@@ -213,13 +337,64 @@ document.addEventListener("DOMContentLoaded", function() {
                 let item = localStorage.getItem(key);
                 let checkbox = "checkbox_" + uniqueid;
                 if (localStorage.getItem(checkbox) === "true") {
-                    item += "_checked";
+                    item += "(V'#8]i=fWF-^t7cBN-3S)_checked";
                 }
                 listitems.push(item);
             }
         });
+
+        let color = localStorage.getItem("color");
         
         localStorage.clear();
+
+        localStorage.setItem("color", color);
+
         createList(listname, listitems);
     }
+});
+
+//function to upload a file
+
+document.getElementById("uploadBtn").addEventListener("click", function () {
+    let fileinput = document.createElement('input');
+    fileinput.type = 'file';
+    fileinput.accept = '.txt';
+
+    fileinput.addEventListener('change', function() {
+        let file = fileinput.files[0];
+        let reader = new FileReader();
+
+        reader.onload = function(event) {
+            let error = false;
+            let listname = file.name.split('.')[0];
+            if (listname.length > 21) {
+                alert("File name must be between 1-21 characters.");
+                error = true;
+            }
+            let listitems = event.target.result.split('\n');
+            for (let i = 0; i < listitems.length; i++) {
+                listitems[i] = listitems[i].trim();
+                if (listitems[i] == "") {
+                    listitems.splice(i, 1);
+                    i--;
+                }
+            }
+
+            if (listitems.length == 0) {
+                alert("File must contain at least one list item.");
+                error = true;
+            }
+
+            if (error == true) {
+                return;
+            }
+
+            localStorage.clear();
+            createList(listname, listitems);
+        };
+
+        reader.readAsText(file);
+    });
+
+    fileinput.click();
 });
