@@ -379,7 +379,7 @@ document.getElementById("uploadBtn").addEventListener("click", function () {
                 error = true;
             }
             let listitems = event.target.result.split('\n');
-            if (listitems == "" || listitems.split("\n").filter(item => item.trim() !== "").length == 0) {
+            if (listitems.length == 0 || listitems.filter(item => item.trim() !== "").length == 0) {
                 alert("File must contain at least one list item.");
                 error = true;
             }
