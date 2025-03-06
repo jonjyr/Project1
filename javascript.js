@@ -356,6 +356,13 @@ document.addEventListener("DOMContentLoaded", function() {
 //function to upload a file
 
 document.getElementById("uploadBtn").addEventListener("click", function () {
+    
+    if (table.hasChildNodes()) {
+        if (!confirm("This will overwrite the current list. Are you sure?")) {
+            return;
+        }
+    }
+
     let fileinput = document.createElement('input');
     fileinput.type = 'file';
     fileinput.accept = '.txt';
@@ -372,15 +379,7 @@ document.getElementById("uploadBtn").addEventListener("click", function () {
                 error = true;
             }
             let listitems = event.target.result.split('\n');
-            for (let i = 0; i < listitems.length; i++) {
-                listitems[i] = listitems[i].trim();
-                if (listitems[i] == "") {
-                    listitems.splice(i, 1);
-                    i--;
-                }
-            }
-
-            if (listitems.length == 0) {
+            if (listitems == "" || listitems.split("\n").filter(item => item.trim() !== "").length == 0) {
                 alert("File must contain at least one list item.");
                 error = true;
             }
