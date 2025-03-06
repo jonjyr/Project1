@@ -178,15 +178,19 @@ function createList(listname, listitems) {
     //create color buttons function
     function changeColor(color) {
         if (color == "yellow") {
-            document.getElementById("table").style.backgroundColor = "#fff68b";
+            document.getElementById("table").style.background = "radial-gradient(circle, hsla(55, 73%, 77%, 1) 50%, hsla(55, 100%, 77%, 1) 100%)";
             localStorage.setItem("color", "yellow");
         } else if (color == "green") {
-            document.getElementById("table").style.backgroundColor = "#cdfc93";
+            document.getElementById("table").style.background = "radial-gradient(circle, hsla(86, 57%, 76%, 1) 50%, hsla(87, 95%, 78%, 1) 100%)";
             localStorage.setItem("color", "green");
         } else if (color == "blue") {
-            document.getElementById("table").style.backgroundColor = "#88d6f5";
+            document.getElementById("table").style.background = "radial-gradient(circle, hsla(197, 69%, 76%, 1) 50%, hsla(197, 84%, 75%, 1) 100%)";
             localStorage.setItem("color", "blue");
         }
+    }
+
+    if (localStorage.getItem("color") == null) {
+        localStorage.setItem("color", "yellow");
     }
 
     if (localStorage.getItem("color") == "green") {
