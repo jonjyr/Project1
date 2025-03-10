@@ -1,6 +1,6 @@
 # Simple TODO List Application
 
-This is a basic TODO list application built with **HTML**, **CSS**, and **JavaScript** for Project 1 in the *Dynamic Web Applications with JavaScript* course.
+This is a basic TODO list application built with **HTML**, **CSS**, and **JavaScript** for Project 1 assignment in the *Dynamic Web Applications with JavaScript* course.
 
 ## Features
 - **Add Tasks**: Enter a list name and tasks via a form or upload a `.txt` file (one item per line).
