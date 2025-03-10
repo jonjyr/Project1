@@ -252,6 +252,19 @@ function createList(listname, listitems) {
         }
     });
 
+    //clearing input fields and error messages
+
+    document.getElementById("listname").value = "";
+    document.getElementById("listitems").value = "";
+    document.getElementById("listname").style.border = "1px solid black";
+    document.getElementById("listitems").style.border = "1px solid black";
+
+    if (document.getElementById("errorname")) {
+        document.getElementById("errorname").remove();
+    }
+    if (document.getElementById("erroritems")) {
+        document.getElementById("erroritems").remove();
+    }
 
     //hide list creation form
 
@@ -270,14 +283,14 @@ document.getElementById("createBtn").addEventListener("click", function () {
     let nameinput = document.getElementById("listname");
     let error = false;
 
-    if (listname == "") {
+    if (listname.trim() == "") {
         if (document.getElementById("errorname")) {
             document.getElementById("errorname").remove();
         }
         nameinput.style.border = "1px solid red";
         nameinput.insertAdjacentHTML("afterend", '<b class="error" id="errorname"><br>*Please enter a list name.</b>');
         error = true;
-    } else if (listname != 1 && listname.length > 21) {
+    } else if (listname.length > 21) {
         if (document.getElementById("errorname")) {
             document.getElementById("errorname").remove();
         }

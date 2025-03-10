@@ -14,6 +14,11 @@ body {
 .title {
     margin-left: auto;
     margin-right: auto;
+    font-variant: all-petite-caps;
+    font-size: 2.4rem;
+    text-shadow: 1px 1px deepskyblue;
+    font-style: italic;
+
 }
 
 
