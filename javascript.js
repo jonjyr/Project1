@@ -37,6 +37,7 @@ function createList(listname, listitems) {
     table.appendChild(headerrow);
 
     //list items
+    
     for (let i = 0; i < listitems.length; i++) {
         if (listitems[i].trim() != "") {
 
@@ -176,6 +177,7 @@ function createList(listname, listitems) {
     settings.innerHTML = '<div id="fontsize">&#128474;</div><div id="yellowbox" style="background-color: #fff68b;"></div><div id="greenbox" style="background-color: #cdfc93;"></div><div id="bluebox" style="background-color: #88d6f5;"></div>';
 
     //create color buttons function
+
     function changeColor(color) {
         if (color == "yellow") {
             document.getElementById("table").style.background = "radial-gradient(circle, hsla(55, 73%, 77%, 1) 50%, hsla(55, 100%, 77%, 1) 100%)";
