@@ -15,6 +15,6 @@ This is a basic TODO list application built with **HTML**, **CSS**, and **JavaSc
   - Responsive and clean UI.
 
 ## Deployment
-- Netlify: [Insert Netlify URL here]
+- Netlify: https://magical-gelato-f9e8bf.netlify.app/
 
 Thank you for visiting!
